@@ -23,7 +23,7 @@ def display_status(nb, minute, tic, abo):
     print(f"\rLike : {nb} | Progression : {progress} % | abo : {abo}", end="")
 
 def mouvemnt_alea():
-    fichier = open("position_alea.txt", 'r')
+    fichier = open("./objet/position_alea.txt", 'r')
     liste_x = []
     liste_y = []
     for lignes in fichier:

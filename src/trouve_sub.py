@@ -35,7 +35,7 @@ def find_image(template_path, screenshot):
         return None
 
 def mouse_position():
-    template_path = 'im.png'
+    template_path = './objet/im.png'
     min_X, max_X, min_Y, max_Y = give_info()
     image = get_screen_position((min_X, min_Y, max_X - min_X, max_Y - min_Y))
     
@@ -77,4 +77,6 @@ def sub():
     destination_x = 1250 + uniform(-5, 5)
     destination_y = 175 + uniform(-5, 5)
     realistic_move(destination_x, destination_y, duration=1)
+    pyautogui.click()
+    pyautogui.sleep(random() + 1)
     return 1
