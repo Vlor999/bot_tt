@@ -17,7 +17,7 @@ Les autres modules étants courants ne sont pas rappeler.
 Pour lancer le fichier il sera nécessaire de lancer la commande suivante :
 
 ```bash
-./mouvement.py
+./src/mouvement.py
 ```
 
 Ceci après avoir donné les droits d'exécution au fichier avec la commande suivante :
