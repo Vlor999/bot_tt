@@ -1,9 +1,11 @@
 #! /usr/bin/env python3
-import pyautogui
+from pyautogui import press, moveTo, click, sleep
 from time import time, sleep
-from random import randint
+from random import randint, random
 from sys import argv
 from screeninfo import get_monitors
+from trouve_sub import mouse_position, sub, realistic_move
+import bezier
 
 monitors = get_monitors()
 min_x = 0
@@ -16,9 +18,9 @@ for monitor in monitors:
 goal_x = 1.3 * max_X // 4
 goal_y = max_Y // 2
 
-def display_status(nb, minute, tic):
+def display_status(nb, minute, tic, abo):
     progress = round((time() - tic) / (minute * 60) * 100, 2)
-    print(f"\rLike : {nb} | Progression : {progress} %", end="")
+    print(f"\rLike : {nb} | Progression : {progress} % | abo : {abo}", end="")
 
 def mouvemnt_alea():
     fichier = open("position_alea.txt", 'r')
@@ -33,7 +35,6 @@ def mouvemnt_alea():
         liste_y.append(y)
     return liste_x, liste_y
 
-
 def deplacement_alea(l1, l2):
     i = randint(100, 6400)
     taille = randint(30, 50)
@@ -41,48 +42,66 @@ def deplacement_alea(l1, l2):
     y_use = l2[i - taille // 2: i + taille//2 + 1]
     if (len(x_use) == 0):
         return
-    pyautogui.moveTo(x_use[0], y_use[0], duration=0.5)
+    moveTo(x_use[0], y_use[0], duration=random())
     for j in range(len(x_use)):
         x = x_use[j] // 2
         y = y_use[j]
-        pyautogui.moveTo(x, y, duration=0.01)
+        moveTo(x, y, duration=random()/10)
+
+def follow():
+    val = mouse_position()
+    sleep(0.2)
+    click()
+    sleep(random() + 1)
+    return val
 
 def mouvement(l1, l2, minute):
     sleep(1)
-    pyautogui.moveTo(goal_x, goal_y, duration = 1)
-    pyautogui.click()
-    global tic, nb
+    moveTo(goal_x, goal_y, duration = 1)
+    click()
     tic = time()
     nb = 0
+    abo = 0
     while time() - tic < minute * 60: 
         x = randint(min_x, max_X)
         y = randint(min_Y, max_Y)
-        pyautogui.moveTo(x, y, duration=0.5)
-        display_status(nb, minute, tic)
+        realistic_move(x, y, duration=0.5)
+        display_status(nb, minute, tic, abo)
         if randint(1, 14) > 2:
-            pyautogui.moveTo(goal_x + randint(0, 9), goal_y + randint(0, 5), duration = 0.5)
-            pyautogui.press('down')
-            display_status(nb, minute, tic)
+            press('down')
             if randint(1, 6) > 3:
                 nb += 1
-                pyautogui.press('L')
-                pyautogui.sleep(2)
+                press('L')
+                sleep(random() + 1)
         else:
-            pyautogui.press('up')
+            press('up')
             if randint(1, 6) > 2:
-                pyautogui.press('L')
-            pyautogui.sleep(1)
-            pyautogui.press('down')
-            display_status(nb, minute, tic)
+                sleep(random() + 0.2)
+                press('L')
+            sleep(random() + 0.2)
+            press('down')
+
+        display_status(nb, minute, tic, abo)
+
+        if randint(1, 12) == 1:
+            realistic_move(max_X // 2, max_Y // 2, duration = random() / 2)
+            abo += sub()
 
         if randint(1, 2) == 1:
             deplacement_alea(l1, l2)
-        display_status(nb, minute, tic)
-        sleep(randint(5, 15)/3)
 
-liste_x, liste_y = mouvemnt_alea()
-if (len(argv) > 1):
-    minute = float(argv[1])
-else:
-    minute = 10
-mouvement(liste_x, liste_y, minute)
+        display_status(nb, minute, tic, abo)
+
+        sleep(randint(5, 15) / 3)
+
+def main():
+    liste_x, liste_y = mouvemnt_alea()
+    if (len(argv) > 1):
+        minute = float(argv[1])
+    else:
+        minute = 10
+    mouvement(liste_x, liste_y, minute)
+    print()
+
+if __name__ == "__main__":
+    main()
